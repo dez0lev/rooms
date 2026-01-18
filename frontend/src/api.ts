@@ -1,4 +1,7 @@
-const API_BASE = ""; // поменяй порт если другой
+export const API_BASE =
+  location.hostname === "dez0lev.github.io"
+    ? "https://rooms-sdu2.onrender.com"
+    : "";
 
 export async function createRoom(body: {
   number: string;
@@ -110,6 +113,3 @@ export async function deleteBooking(id: string) {
     throw new Error(msg);
   }
 }
-
-
-
