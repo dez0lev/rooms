@@ -1,6 +1,6 @@
 export const API_BASE =
   location.hostname === "dez0lev.github.io"
-    ? "https://rooms-sdu2.onrender.com"
+    ? "https://rooms-r8lo.onrender.com"
     : "";
 
 export async function createRoom(body: {
@@ -38,11 +38,6 @@ export type Room = {
 
 export async function getRooms(): Promise<Room[]> {
   const res = await fetch("/api/rooms");
-
-  if (!res.ok) {
-    const data = await res.json().catch(() => null);
-    throw new Error(data?.message ?? "Подождите прогрузки сайта");
-  }
 
   return res.json();
 }
