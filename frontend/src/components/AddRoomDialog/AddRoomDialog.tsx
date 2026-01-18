@@ -47,7 +47,7 @@ function isPositiveIntString(value: string) {
   return Number.isInteger(n) && n >= 1;
 }
 
-export default function AddRoomDialog({ open, onClose, onSubmit }: Props) {
+export default function AddRoomDialog({ open, onClose }: Props) {
   const [form, setForm] = React.useState<NewRoomForm>(initialState);
   const [touched, setTouched] = React.useState<Touched>({});
   const [submitted, setSubmitted] = React.useState(false);
