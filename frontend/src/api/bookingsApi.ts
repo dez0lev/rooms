@@ -1,3 +1,5 @@
+import { API_BASE } from "@/api";
+
 export type BookingListItemDto = {
   id: string;
   eventName: string;
@@ -18,7 +20,7 @@ export type BookingListItemDto = {
 };
 
 export async function fetchBookings(): Promise<BookingListItemDto[]> {
-  const res = await fetch("/api/bookings");
+  const res = await fetch(`${API_BASE}/api/bookings`);
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`HTTP ${res.status}: ${text}`);

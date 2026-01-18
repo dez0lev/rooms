@@ -5,7 +5,7 @@ export const API_BASE = (() => {
   }
 
   
-  return "http://localhost";
+  return "";
 })();
 
 function apiUrl(path: string) {
