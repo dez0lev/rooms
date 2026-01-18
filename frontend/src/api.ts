@@ -1,31 +1,44 @@
-export const API_BASE =
-  location.hostname === "dez0lev.github.io"
-    ? "https://rooms-r8lo.onrender.com"
-    : "";
+export const API_BASE = (() => {
+  // GitHub Pages всегда на github.io
+  if (location.hostname.endsWith("github.io")) {
+    return "https://rooms-r8lo.onrender.com";
+  }
 
-export async function createRoom(body: {
-  number: string;
-  name: string;
-  capacity: number;
-  description?: string | null;
-}) {
-  const res = await fetch(`${API_BASE}/api/rooms`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+  
+  return "http://localhost";
+})();
+
+function apiUrl(path: string) {
+  return `${API_BASE}${path}`;
+}
+
+async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(apiUrl(path), {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...(init?.headers ?? {}),
+    },
   });
 
   if (!res.ok) {
-    let msg = `HTTP ${res.status}`;
+    // пытаемся достать message из json, иначе текст
+    const text = await res.text().catch(() => "");
     try {
-      const data = await res.json();
-      msg = data?.message ?? msg;
-    } catch {}
-    throw new Error(msg);
+      const data = text ? JSON.parse(text) : null;
+      throw new Error(data?.message ?? `HTTP ${res.status}`);
+    } catch {
+      throw new Error(text || `HTTP ${res.status}`);
+    }
   }
 
-  return res.json();
+  // 204 No Content
+  if (res.status === 204) return undefined as T;
+
+  return res.json() as Promise<T>;
 }
+
+// -------------------- Rooms --------------------
 
 export type Room = {
   id: string;
@@ -36,11 +49,23 @@ export type Room = {
   createdAt: string;
 };
 
-export async function getRooms(): Promise<Room[]> {
-  const res = await fetch("/api/rooms");
-
-  return res.json();
+export async function createRoom(body: {
+  number: string;
+  name: string;
+  capacity: number;
+  description?: string | null;
+}) {
+  return apiFetch<Room>("/api/rooms", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
 }
+
+export async function getRooms(): Promise<Room[]> {
+  return apiFetch<Room[]>("/api/rooms", { method: "GET" });
+}
+
+// -------------------- Bookings --------------------
 
 export async function createBooking(body: {
   eventName: string;
@@ -52,18 +77,10 @@ export async function createBooking(body: {
   startsAt: string;
   endsAt: string;
 }) {
-  const res = await fetch("/api/bookings", {
+  return apiFetch<any>("/api/bookings", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`HTTP ${res.status}: ${text}`);
-  }
-
-  return res.json();
 }
 
 export async function updateBooking(
@@ -79,32 +96,12 @@ export async function updateBooking(
     endsAt: string;
   },
 ) {
-  const res = await fetch(`/api/bookings/${id}`, {
+  return apiFetch<any>(`/api/bookings/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-
-  if (!res.ok) {
-    const data = await res.json().catch(() => null);
-    throw new Error(data?.message ?? "Не удалось обновить бронирование");
-  }
-
-  return res.json();
 }
 
 export async function deleteBooking(id: string) {
-  const res = await fetch(`/api/bookings/${id}`, { method: "DELETE" });
-
-  if (!res.ok) {
-    const text = await res.text();
-    let msg = `HTTP ${res.status}`;
-    try {
-      const data = JSON.parse(text);
-      msg = data?.message ?? msg;
-    } catch {
-      if (text) msg = text;
-    }
-    throw new Error(msg);
-  }
+  return apiFetch<void>(`/api/bookings/${id}`, { method: "DELETE" });
 }

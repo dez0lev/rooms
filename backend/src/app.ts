@@ -14,6 +14,8 @@ import {
   BookingListItemDto,
 } from "./types.js";
 
+
+
 // Этот модуль собирает все настройки Fastify: плагины инфраструктуры, обработчики ошибок и маршруты API.
 
 /**
@@ -43,7 +45,12 @@ export async function buildApp() {
   await app.register(helmet);
 
   // CORS ограничивает кросс-доменные запросы. Здесь полностью запрещаем их (origin: false) по умолчанию.
-  await app.register(cors, { origin: true });
+  await app.register(cors, {
+    origin: [
+      "http://localhost",
+      "https://dez0lev.github.io",
+    ],
+  });
 
   /**
    * Ограничитель количества запросов на IP.
