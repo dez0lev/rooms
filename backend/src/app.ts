@@ -46,10 +46,7 @@ export async function buildApp() {
 
   // CORS ограничивает кросс-доменные запросы. Здесь полностью запрещаем их (origin: false) по умолчанию.
   await app.register(cors, {
-    origin: [
-      "http://localhost",
-      "https://dez0lev.github.io",
-    ],
+    origin: true,
   });
 
   /**
