@@ -6,8 +6,8 @@ export type BookingListItemDto = {
   eventType: "LECTURE" | "PRACTICE" | "SEMINAR" | "EXAM" | "OTHER";
   subject: string | null;
 
-  startsAt: string; // ISO
-  endsAt: string; // ISO
+  startsAt: string; 
+  endsAt: string; 
 
   roomId: string;
   roomLabel: string;
@@ -16,7 +16,7 @@ export type BookingListItemDto = {
   backupRoomLabel: string | null;
 
   organizerName: string;
-  createdAt: string; // ISO
+  createdAt: string; 
 };
 
 export async function fetchBookings(): Promise<BookingListItemDto[]> {

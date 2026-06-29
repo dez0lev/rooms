@@ -442,7 +442,7 @@ export async function buildApp() {
         createdAt: room.createdAt.toISOString(),
       });
     } catch (e: any) {
-      // unique number
+      
       if (e?.code === "P2002") {
         return reply.code(409).send({ message: "Room already exists" });
       }

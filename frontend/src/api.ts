@@ -1,7 +1,6 @@
 export const API_BASE = (() => {
-  // GitHub Pages всегда на github.io
   if (location.hostname.endsWith("github.io")) {
-    return "https://rooms-r8lo.onrender.com";
+    return "https://rooms-n98n.onrender.com";
   }
 
   
